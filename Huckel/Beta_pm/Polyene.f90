@@ -3,7 +3,7 @@ implicit none
 
 real*8,allocatable :: H(:,:), D(:,:), autov(:)
 real*8, allocatable :: work(:)
-real*8 :: alpha, beta
+real*8 :: alpha, beta_p, beta_m
 
 integer :: i,j,k, starting,ending
 integer :: ii, tmp
@@ -29,9 +29,12 @@ allocate(indices(n))
 
 
 
-write(*,*) 'Set value of beta (remember, IT IS NEGATIVE):'
-read(*,*) beta
+write(*,*) 'Set value of beta(+) (remember, IT IS NEGATIVE):'
+read(*,*) beta_p
+write(*,*) ''
 
+write(*,*) 'Set value of beta(-) (remember, IT IS NEGATIVE):'
+read(*,*) beta_m
 
 write(*,*) 'Is it cyclic (t/f)?'
 read(*,*) cyclic
@@ -41,16 +44,34 @@ read(*,*) cyclic
 
 H = 0
 
-do i=1,n-1
-    H(i,i+1) = beta
-    H(i+1,i) = beta
+do i=2,n-1
+    if (mod(i,2).eq.1) then
+        H(i+1,i) = beta_p
+        H(i-1,i) = beta_p
+    else
+        H(i+1,i) = beta_m
+        H(i-1,i) = beta_m
+    endif
     H(i,i) = alpha
 enddo
+H(2,1) = beta_p
 
+if (mod(n,1).eq.1) then
+    H(n-1,n) = beta_p
+else
+    H(n-1,n) = beta_m
+endif
+
+
+
+H(0,0) = alpha
 H(n,n) = alpha
+
+
+
 if (cyclic) then
-    H(1,n) = beta
-    H(n,1) = beta
+    H(1,n) = H(n-1,n)
+    H(n,1) = H(2,1)
 endif
 
 
