@@ -64,7 +64,7 @@ endif
 
 
 
-H(0,0) = alpha
+H(1,1) = alpha
 H(n,n) = alpha
 
 
