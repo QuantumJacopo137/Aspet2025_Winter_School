@@ -83,14 +83,14 @@ program EST
 ! Orthogonalization X = S^(-1/2)
 !------------------------------------------------------------------------
 
-! call orthogonalization_matrix(nBas,S,X)
+ call orthogonalization_matrix(nBas,S,X) ! FATTO ! **********************************
 
 !------------------------------------------------------------------------
 ! Compute restricted HF energy
 !------------------------------------------------------------------------
 
     call cpu_time(start_HF)
-!   call RHF(nBas,nO,S,T,V,Hc,ERI,X,ENuc,EHF,e,c)
+    call RHF(nBas,nO,S,T,V,Hc,ERI,X,ENuc,EHF,e,c) ! QUESTO
     call cpu_time(end_HF)
 
     t_HF = end_HF - start_HF
