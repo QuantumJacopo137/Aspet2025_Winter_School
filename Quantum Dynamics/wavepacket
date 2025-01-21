@@ -1,0 +1,6 @@
+512     #Number of lattice points
+-0.5    #Initial position (in Bohr)
+12.755  #Governs the initial width of the wave packet (in Bohr^(-2))
+0.01    #Propagation time step (in fs)
+4000    #Number of propagation steps
+20      #Snapshot frequency (after 20 timesteps a snapshot will be taken)

@@ -13,6 +13,8 @@ real*8 :: psi
 real*8 :: E_m = 0.d0
 real*8,allocatable :: E_L(:,:)
 real*8 :: W=1.d0
+real*8 :: w_small
+real*8 :: norm
 real*8 :: sigma, sigma_t
 real*8,allocatable :: E_statisitcal(:) ! each vector element has the average energy of the n_max points of one MC run 
 real*8 :: tau=0.d0
@@ -20,7 +22,7 @@ real*8 :: tau=0.d0
 real*8 :: amplitude
 real*8 :: real_random
 real*8 :: tr, tr1
-real*8 :: E_ref = -0.1
+real*8 :: E_ref = -0.4
 real*8 :: E_tmp
 
 integer :: i,j,k,tmp, ii
@@ -29,7 +31,7 @@ integer :: boundery
 integer, parameter :: n_max=100000 ! config per step
 integer, parameter :: m = 30
 real*8, parameter :: tau_max = 100
-real*8, parameter  :: dL = 0.5 ! walk step 
+real*8, parameter  :: dL = 0.1 ! walk step 
 
 
 
@@ -43,8 +45,8 @@ do j = 1,m
 ! initial conditions
 E_L = 0.d0
 tmp = 1
-W = 0.d0
-E_m = 0.d0
+W = 1.d0
+tau = 0.d0
 
 
 
@@ -87,11 +89,18 @@ do i = 1,n_max
     E_L(tmp,1) = r(1)
     E_L(tmp,2) = r(2)
     E_L(tmp,3) = r(3)
+
     E_tmp =0.d0
-    do
-        W = W * exp(-(e_loc(a,r)-E_ref)*dL)    
+    norm = 0
+    do    
+        w_small = exp(-dL*(e_loc(a,r)-E_ref))
+
+        W = W * w_small
+
         E_tmp = E_tmp + e_loc(a,r) * W
+        norm = norm + W
         tau = tau+dL
+
         if (tau.ge.tau_max) then
             tau = 0.d0
             W = 1.d0
@@ -101,7 +110,7 @@ do i = 1,n_max
     
     E_L(tmp,4) = E_tmp 
 
-    E_m = E_m + E_L(tmp,4)  
+    E_m = E_m + E_tmp / norm
     
     tmp = tmp + 1
 enddo

@@ -1,0 +1,3 @@
+harmonic  #harmonic or doublewell
+0.2825    #angular frequency for harmonic potential (in fs^(-1))
+5.0       #Height of barrier in double well potential (in kcal/mol)
