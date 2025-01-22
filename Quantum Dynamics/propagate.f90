@@ -54,6 +54,10 @@
  call operators(npoints,dx,dt,pot,kin,exppot,expkin) !Calculate the kinetic and potential operators
 
  psi=psi0                                            !Set the wavepacket psi at t=0 equal psi0
+! open(13,file='Psi_sol.txt')
+! do i = 1,npoints
+!     write(13,*) (i-1)*dx-length/2., real(psi0(i)), aimag(psi0(i))
+! enddo
  do i=0,ntime                                        !Start propagation
     t=i*dt
     if (i>0) then
@@ -86,7 +90,11 @@
  integer :: i,j,npoints
  real(8) :: alpha,x,x0,dx
  complex(8) :: psi0(npoints)
- 
+ open(13,file='Psi_sol.txt')
+! do i = 1,npoints
+!     write(13,*) (i-1)*dx-length/2., real(psi0(i)), aimag(psi0(i))
+! enddo
+
  do i=-npoints/2+1,npoints/2
     x=dble(i)*dx
     if (i>0) then
@@ -95,8 +103,12 @@
        j=i+npoints
     endif
     psi0(j)=exp(-alpha*(x-x0)**2)
+
+    write(13,*)  x, real(psi0(j)), aimag(psi0(j))
  end do
 
+ 
+ 
  end subroutine initpsi
 !----------------------!
 
@@ -111,7 +123,8 @@
  complex(8) :: exppot(npoints),expkin(npoints)
 
  dp=2.d0*pi/length
- do i=-npoints/2+1,npoints/2
+open(13,file='Energy_his.txt')
+do i=-npoints/2+1,npoints/2
     x=dble(i)*dx
     p=dble(i-1)*dp
     if (i>0) then
@@ -127,8 +140,9 @@
     kin(j)=0.5d0*p**2/mass
     exppot(j)=exp(-dt*(0,1)*pot(j))
     expkin(j)=exp(-dt*(0,1)*kin(j))
+    write(13,*) x, pot(j), p, kin(j)
  end do
-
+close(13)
  end subroutine operators
 !------------------------!
 
